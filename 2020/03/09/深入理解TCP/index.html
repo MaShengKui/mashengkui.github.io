@@ -20,27 +20,48 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Mask">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="前言说起TCP协议相信大家都不陌生，作为互联网的主要的传输协议，其重要性自不必说。计算机网络体系十分庞大而复杂，TCP协议也不例外。TCP协议从发布至今也经历过无数次的修订和迭代，所以本篇也只是对其中的核心点分析一二。若有谬误之处，还请指正。 TCP报文结构分析传输控制协议（Transmission Control Protocol），简称TCP。  提供一种面向连接的、可靠的、基于字节流的服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解TCP">
+<meta property="og:url" content="http://yoursite.com/2020/03/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TCP/index.html">
 <meta property="og:site_name" content="Mask">
+<meta property="og:description" content="前言说起TCP协议相信大家都不陌生，作为互联网的主要的传输协议，其重要性自不必说。计算机网络体系十分庞大而复杂，TCP协议也不例外。TCP协议从发布至今也经历过无数次的修订和迭代，所以本篇也只是对其中的核心点分析一二。若有谬误之处，还请指正。 TCP报文结构分析传输控制协议（Transmission Control Protocol），简称TCP。  提供一种面向连接的、可靠的、基于字节流的服务。">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/29020856-d515-45db-b745-14a7b1900fc5image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/90233978-9a5d-4c86-a4e3-d2915140b44cimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/f53b9815-6ab0-4033-aa14-c8fbd4c0c77aimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/5f70e1e3-ee2d-4c83-be37-4939c9d835f6image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/7e64dbaa-8280-470f-9c9b-401f86494c90image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/75247d1c-ad53-4c5d-972a-65d54e038973image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/a65ba665-f659-4696-bd5b-4588f516140bimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/94a85e27-d0cf-4115-9ad2-d9d8afd793eeimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/a40cf29e-6ac3-4f0c-8e15-6e0f3b74fce9image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/f1db0dad-b654-4c56-b01a-d46ab76f33d9image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/c5d21a46-1039-4cc4-87e6-6a9e3565023aimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/03858310-9df1-4cf3-be3f-3ccf03540ae1image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/6ff671be-b725-4fcf-a189-d64257f8ce67image.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/45bd0cf5-7c19-4110-91c0-77ec1186e14aimage.png">
+<meta property="og:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/5daae0e1-dc90-460e-a5f4-5176213ad762image.png">
+<meta property="article:published_time" content="2020-03-09T11:34:31.000Z">
+<meta property="article:modified_time" content="2021-04-30T10:04:27.084Z">
 <meta property="article:author" content="Mask">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/29020856-d515-45db-b745-14a7b1900fc5image.png">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/03/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TCP/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-Hans'
   };
 </script>
 
-  <title>Mask</title>
+  <title>深入理解TCP | Mask</title>
   
 
 
@@ -138,9 +159,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
@@ -156,10 +178,9 @@
       <meta itemprop="name" content="Mask">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TCP/" class="post-title-link" itemprop="url">深入理解TCP</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          深入理解TCP
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -189,7 +210,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>说起TCP协议相信大家都不陌生，作为互联网的主要的传输协议，其重要性自不必说。<br>计算机网络体系十分庞大而复杂，TCP协议也不例外。TCP协议从发布至今也经历过无数次的修订和迭代，所以本篇也只是对其中的核心点分析一二。<br>若有谬误之处，还请指正。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>说起TCP协议相信大家都不陌生，作为互联网的主要的传输协议，其重要性自不必说。<br>计算机网络体系十分庞大而复杂，TCP协议也不例外。TCP协议从发布至今也经历过无数次的修订和迭代，所以本篇也只是对其中的核心点分析一二。<br>若有谬误之处，还请指正。</p>
 <h1 id="TCP报文结构分析"><a href="#TCP报文结构分析" class="headerlink" title="TCP报文结构分析"></a>TCP报文结构分析</h1><p>传输控制协议（Transmission Control Protocol），简称TCP。</p>
 <ul>
 <li><p>提供一种面向连接的、可靠的、基于字节流的服务。</p>
@@ -421,210 +442,33 @@
 </li>
 </ul>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/11/Flutter%E4%B8%AD%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84%E6%B5%85%E6%9E%90/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/16025323?v=4">
-      <meta itemprop="name" content="Mask">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mask">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/11/Flutter%E4%B8%AD%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Flutter中的树结构浅析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-11-11 19:34:31" itemprop="dateCreated datePublished" datetime="2019-11-11T19:34:31+08:00">2019-11-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-04-30 15:08:13" itemprop="dateModified" datetime="2021-04-30T15:08:13+08:00">2021-04-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><h3 id="1、Widget、Element、RenderObject"><a href="#1、Widget、Element、RenderObject" class="headerlink" title="1、Widget、Element、RenderObject"></a>1、Widget、Element、RenderObject</h3><h3 id="2、Flutter中树结构的创建、更新、复用"><a href="#2、Flutter中树结构的创建、更新、复用" class="headerlink" title="2、Flutter中树结构的创建、更新、复用"></a>2、Flutter中树结构的创建、更新、复用</h3><h3 id="3、DOM、Virtual-DOM、diff"><a href="#3、DOM、Virtual-DOM、diff" class="headerlink" title="3、DOM、Virtual DOM、diff"></a>3、DOM、Virtual DOM、diff</h3><h3 id="4、Key的分类及使用"><a href="#4、Key的分类及使用" class="headerlink" title="4、Key的分类及使用"></a>4、Key的分类及使用</h3><h3 id="5、参考资料"><a href="#5、参考资料" class="headerlink" title="5、参考资料"></a>5、参考资料</h3><br>
-
-<h2 id="1、Widget、Element、RenderObject-1"><a href="#1、Widget、Element、RenderObject-1" class="headerlink" title="1、Widget、Element、RenderObject"></a>1、Widget、Element、RenderObject</h2><h3 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h3><ul>
-<li>Flutter的基石，用户界面的不可变的一种描述；会频繁创建、销毁。</li>
-<li>作用类似于HTML中的标签。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/4fd89b5d-aa06-4dbd-9f32-23c8f82cbb66image.png" alt="image.png"></p>
-<h3 id="Element"><a href="#Element" class="headerlink" title="Element"></a>Element</h3><ul>
-<li>Widget的实例化对象，在树中详细的位置。</li>
-<li>利用Widget作为配置，用于管理Widget的生命周期、UI的更新。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/81b5c186-b9e8-486e-b9ec-c764d26c1987image.png" alt="image.png"></p>
-<h3 id="RenderObject"><a href="#RenderObject" class="headerlink" title="RenderObject"></a>RenderObject</h3><ul>
-<li>由Element的子类RenderObjectElement创建，负责UI的布局、绘制、事件响应。</li>
-<li>开发复杂视图时，可以自定义绘制功能。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/3dcaa978-8967-47dc-b6ce-40756080bc8aimage.png" alt="image.png"></p>
-<h3 id="Widget、Element、RenderObject之间的关系"><a href="#Widget、Element、RenderObject之间的关系" class="headerlink" title="Widget、Element、RenderObject之间的关系"></a>Widget、Element、RenderObject之间的关系</h3><ul>
-<li>Element同时持有对Widget和RenderObject的引用。</li>
-<li>源码如图所示：</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/23955184-aec0-4ea3-8421-1167c50b74b3image.png" alt="image.png"></p>
-<br>
-
-<h2 id="2、Flutter中树结构的创建、更新、复用-1"><a href="#2、Flutter中树结构的创建、更新、复用-1" class="headerlink" title="2、Flutter中树结构的创建、更新、复用"></a>2、Flutter中树结构的创建、更新、复用</h2><h3 id="Flutter中的树结构"><a href="#Flutter中的树结构" class="headerlink" title="Flutter中的树结构"></a>Flutter中的树结构</h3><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/41e9a3d9-10a0-4a7b-ba94-a7117e7fdb24image.png" alt="image.png"></p>
-<h3 id="为什么创建3棵树？"><a href="#为什么创建3棵树？" class="headerlink" title="为什么创建3棵树？"></a>为什么创建3棵树？</h3><ul>
-<li>提高性能<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">尽可能的复用Element和RenderObject，因为Widget可能会频繁的创建销毁，</span><br><span class="line">因此WidgetTree是非常不稳定的，如果每次直接根据WidgetTree重新创建RenderObjectTree会极大的消耗性能。</span><br></pre></td></tr></table></figure></li>
-<li>便于访问状态、树节点之间的结构信息等数据<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例如：</span><br><span class="line">StatelessElement内部存储了_widget、 _renderObject；</span><br><span class="line">对于StatefulElement其内部还存储了_state信息。</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="树的创建过程"><a href="#树的创建过程" class="headerlink" title="树的创建过程"></a>树的创建过程</h3><h4 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h4><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/aaed0b51-442c-4672-99cc-d670528fb96fimage.png" alt="image.png"></p>
-<h4 id="1、Flutter主入口，main-函数。"><a href="#1、Flutter主入口，main-函数。" class="headerlink" title="1、Flutter主入口，main()函数。"></a>1、Flutter主入口，main()函数。</h4><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/911d8b88-47f6-4989-ae09-8c6dcd997142image.png" alt="image.png"></p>
-<h4 id="2、初始化Flutter功能组件。"><a href="#2、初始化Flutter功能组件。" class="headerlink" title="2、初始化Flutter功能组件。"></a>2、初始化Flutter功能组件。</h4><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/35e31a55-78e9-44cb-b901-c80fc2395fbfimage.png" alt="image.png"></p>
-<h4 id="3-1、创建根Widget（即RenderObjectToWidgetAdapter）"><a href="#3-1、创建根Widget（即RenderObjectToWidgetAdapter）" class="headerlink" title="3.1、创建根Widget（即RenderObjectToWidgetAdapter）"></a>3.1、创建根Widget（即RenderObjectToWidgetAdapter）</h4><ul>
-<li>内部创建了RenderObjectToWidgetAdapter ，并将我们传入的自定义Widget（即runApp）做为其child；</li>
-<li>RenderObjectToWidgetAdapter本身是一个RenderObjectWidget，是RenderObject和Element之间的桥梁。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/f476926e-a489-44ca-8596-f878aad14504image.png" alt="image.png"></p>
-<h4 id="3-2、创建根Element（即RenderObjectToWidgetElement）"><a href="#3-2、创建根Element（即RenderObjectToWidgetElement）" class="headerlink" title="3.2、创建根Element（即RenderObjectToWidgetElement）"></a>3.2、创建根Element（即RenderObjectToWidgetElement）</h4><ul>
-<li>接着执行attachToRenderTree()方法，创建根Element，并调用mount()方法，继续创建根RenderObject。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/9c9b6093-ad4b-4cc3-9c3a-ad364672ade4image.png" alt="image.png"></p>
-<h4 id="3-3、创建根RenderObject"><a href="#3-3、创建根RenderObject" class="headerlink" title="3.3、创建根RenderObject"></a>3.3、创建根RenderObject</h4><ul>
-<li>在根Element中调用了mount()方法后，会调用super.mount()方法，即RenderObjectElement.mount()，创建根RenderObject，并将其挂载。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/18e29375-198a-41b2-aae8-21a1bb78cd5cimage.png" alt="image.png"></p>
-<h4 id="4、调用scheduleWarmUpFrame方法。"><a href="#4、调用scheduleWarmUpFrame方法。" class="headerlink" title="4、调用scheduleWarmUpFrame方法。"></a>4、调用scheduleWarmUpFrame方法。</h4><ul>
-<li>此时WidgetTree、ElementTree、RenderObjectTree对应的结构都已经初步建立，Flutter准备界面渲染和显示。</li>
-</ul>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/894b42d6-0800-4b48-92fa-7658ba0e93e7image.png" alt="image.png"></p>
-<h3 id="Flutter中树的更新"><a href="#Flutter中树的更新" class="headerlink" title="Flutter中树的更新"></a>Flutter中树的更新</h3><h4 id="更新规则"><a href="#更新规则" class="headerlink" title="更新规则"></a>更新规则</h4><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/3d69a506-8227-4813-a291-01679a8428c5image.png" alt="image.png"></p>
-<h4 id="问题：在更新过程中，如何知道Widget能够复用Element呢？"><a href="#问题：在更新过程中，如何知道Widget能够复用Element呢？" class="headerlink" title="问题：在更新过程中，如何知道Widget能够复用Element呢？"></a>问题：在更新过程中，如何知道Widget能够复用Element呢？</h4><h4 id="答案：Widget提供了一个核心方法canUpdate，如源码所示："><a href="#答案：Widget提供了一个核心方法canUpdate，如源码所示：" class="headerlink" title="答案：Widget提供了一个核心方法canUpdate，如源码所示："></a>答案：Widget提供了一个核心方法canUpdate，如源码所示：</h4><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/6f91ea85-8980-45f0-8791-e7e275e5d2efimage.png" alt="image.png"></p>
-<ul>
-<li>默认情况下：Widget的Key == null。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当没有给Widget设置Key的时候，Flutter会根据Widget的runtimeType和显示顺序是否相同来判断Widget是否有变化。（runtimeType即Widget的类型）</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>当给Widget设置了Key时。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当给Widget设置了Key时，Flutter根据runtimeType和Key两个条件来判断Widget是否有变化。</span><br></pre></td></tr></table></figure>
-
-<h3 id="Flutter中树的复用"><a href="#Flutter中树的复用" class="headerlink" title="Flutter中树的复用"></a>Flutter中树的复用</h3><ul>
-<li>Demo：<a href="https://github.com/MaShengKui/flutter_reuse_demo.git" target="_blank" rel="noopener">https://github.com/MaShengKui/flutter_reuse_demo.git</a></li>
-</ul>
-<br>
-
-<h2 id="3、DOM、Virtual-DOM、diff-1"><a href="#3、DOM、Virtual-DOM、diff-1" class="headerlink" title="3、DOM、Virtual DOM、diff"></a>3、DOM、Virtual DOM、diff</h2><h3 id="DOM是什么？"><a href="#DOM是什么？" class="headerlink" title="DOM是什么？"></a>DOM是什么？</h3><ul>
-<li>文档对象模型（Document Object Model，简称DOM），是W3C组织推荐的处理可扩展置标语言的标准编程接口。</li>
-<li>DOM提供了对整个文档的访问模型，将文档抽象成一个倒立生长的树形结构，树的每个节点表示了一种对象类型，节点之间存在父子、兄弟关系。</li>
-<li>DOM是一种与平台和语言无关的应用程序接口(API)，可以动态地访问程序和脚本，更新其内容、结构。</li>
-<li>常见的形式主要有：HTML-DOM、XML-DOM。</li>
-</ul>
-<h3 id="常见的HTML-DOM结构"><a href="#常见的HTML-DOM结构" class="headerlink" title="常见的HTML-DOM结构"></a>常见的HTML-DOM结构</h3><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/ca6dbd7a-dcf7-4434-aa98-073fb4c4931bimage.png" alt="image.png"></p>
-<h3 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h3><ul>
-<li><p>Flutter的很多灵感来自于React，比如： Virtual DOM、diff算法、状态管理等。</p>
-</li>
-<li><p>Virtual DOM的本质</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对应于Flutter，就是在Widget和RenderObject之间做了一个缓存。</span><br><span class="line">可以类比CPU和硬盘，硬盘速度很慢，所以在两者之间加入内存缓存。</span><br><span class="line">既然直接操纵RenderObject很慢并且消耗性能，就可以在Widget和RenderObject之间加个缓存（Element）。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Virtual DOM算法主要步骤</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、用对象结构作为DOM树结构的映射，然后用这个树构建一个真正的DOM树，插到上下文中。</span><br><span class="line">2、当状态发生变更时，重新构造一颗新的对象树，然后用新树和旧树进行比较，记录两棵树的差异，即diff的过程。</span><br><span class="line">3、把第2步所记录的差异，应用到真正的DOM树上（即patch），进行视图更新。</span><br></pre></td></tr></table></figure>
-
-<h3 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h3><ul>
-<li>diff作为Virtual DOM算法的核心，具有一定的规则。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1、深度优先遍历新旧2棵Virtual DOM树，给每个节点设定唯一的标记。</span><br><span class="line">遍历的同时，将旧树的节点与新树的节点进行比较，将差异依次记录到一个对象中。</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">patches[0] &#x3D; [&#123;difference&#125;, &#123;difference&#125;, ...]  &#x2F;&#x2F; 用数组存储新旧节点的差异</span><br><span class="line"></span><br><span class="line">2、定义差异类型。</span><br><span class="line">2.1、替换掉原来的节点。例如：把Row、改为Column。</span><br><span class="line">2.2、移动、删除、新增子节点。例如：把多子Widget的children换位置。</span><br><span class="line">2.3、修改了节点的属性。例如：颜色变化。</span><br><span class="line">2.4、文本节点的内容修改。例如：Text(“123”) 改为 Text(“ABC”)。</span><br><span class="line"></span><br><span class="line">3、把差异应用到真正的DOM树上，即patch的过程。</span><br><span class="line">对应Flutter中，也就是更新RenderObjectTree，重新渲染页面。</span><br></pre></td></tr></table></figure>
-
-<h4 id="问题：对于多个相同TagName或相同runtimeType的DOM节点，如何复用？"><a href="#问题：对于多个相同TagName或相同runtimeType的DOM节点，如何复用？" class="headerlink" title="问题：对于多个相同TagName或相同runtimeType的DOM节点，如何复用？"></a>问题：对于多个相同TagName或相同runtimeType的DOM节点，如何复用？</h4><h4 id="答案：给Widget设置Key，保证唯一性。"><a href="#答案：给Widget设置Key，保证唯一性。" class="headerlink" title="答案：给Widget设置Key，保证唯一性。"></a>答案：给Widget设置Key，保证唯一性。</h4><br>
-
-<h2 id="4、Key的分类及使用-1"><a href="#4、Key的分类及使用-1" class="headerlink" title="4、Key的分类及使用"></a>4、Key的分类及使用</h2><h3 id="Key的定义"><a href="#Key的定义" class="headerlink" title="Key的定义"></a>Key的定义</h3><ul>
-<li>官方定义如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Key是Widget、Element、SemanticsNode（语义节点）的标识符。</span><br><span class="line">只有当新的Widget的Key与当前Element中Widget的Key相同时，它才会被用来更新现有的Element。</span><br><span class="line">Key在具有相同父级的Element之间必须是唯一的。</span><br></pre></td></tr></table></figure></li>
-<li>Key的作用：diff算法的关键。</li>
-</ul>
-<h3 id="Key的分类"><a href="#Key的分类" class="headerlink" title="Key的分类"></a>Key的分类</h3><p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/e7e665d8-4077-491e-8309-7e63b0de948dimage.png" alt="image.png"></p>
-<ul>
-<li>LocalKey</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LocalKey直接继承自抽象类Key ，应用于拥有相同父级Element的Widget进行比较的场景。</span><br><span class="line">例如：有一个多子Widget中需要对它的子Widget进行移动操作，此时可以使用LocalKey，提高Element复用率，提高性能。</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>GlobalKey</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GlobalKey直接继承自抽象类Key，内部使用了一个静态常量Map来保存它对应的Element。</span><br><span class="line">可以通过GlobalKey找到持有该GlobalKey的Widget、Element和State。</span><br><span class="line">GlobalKey可以在多个页面或者层级复用。</span><br><span class="line"></span><br><span class="line">注意：GlobalKey比较昂贵，需要谨慎使用。</span><br></pre></td></tr></table></figure>
-<p>GlobalKey的源码如下：</p>
-<p><img src="https://wos.58cdn.com.cn/IjGfEdCbIlr/ishare/64403911-a01c-4892-bc42-a591f6023ed4image.png" alt="image.png"></p>
-<h3 id="Key的使用"><a href="#Key的使用" class="headerlink" title="Key的使用"></a>Key的使用</h3><ul>
-<li>Demo：<a href="https://github.com/MaShengKui/flutter_reuse_demo.git" target="_blank" rel="noopener">https://github.com/MaShengKui/flutter_reuse_demo.git</a></li>
-</ul>
-<br>
-
-<h2 id="5、参考资料-1"><a href="#5、参考资料-1" class="headerlink" title="5、参考资料"></a>5、参考资料</h2><ul>
-<li><p>How Flutter renders Widgets：<a href="https://www.youtube.com/watch?v=996ZgFRENMs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=996ZgFRENMs</a></p>
-</li>
-<li><p>Flutter‘s Rendering Pipeline：<a href="https://www.youtube.com/watch?v=UUfXWzp0-DU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=UUfXWzp0-DU</a></p>
-</li>
-<li><p>Flutter中的Key：<a href="https://www.youtube.com/watch?v=kn0EOS-ZiIc" target="_blank" rel="noopener">https://www.youtube.com/watch?v=kn0EOS-ZiIc</a></p>
-</li>
-<li><p>深度剖析：如何实现一个 Virtual DOM 算法：<a href="https://github.com/livoras/blog/issues/13" target="_blank" rel="noopener">https://github.com/livoras/blog/issues/13</a></p>
-</li>
-</ul>
-<br>
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/11/Flutter%E4%B8%AD%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84%E6%B5%85%E6%9E%90/" rel="prev" title="Flutter中的树结构浅析">
+      <i class="fa fa-chevron-left"></i> Flutter中的树结构浅析
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -677,6 +521,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP报文结构分析"><span class="nav-number">2.</span> <span class="nav-text">TCP报文结构分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSI网络模型"><span class="nav-number">2.1.</span> <span class="nav-text">OSI网络模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP报文结构如下图所示："><span class="nav-number">2.2.</span> <span class="nav-text">TCP报文结构如下图所示：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP报文字段含义说明："><span class="nav-number">2.3.</span> <span class="nav-text">TCP报文字段含义说明：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP的运行方式及特性"><span class="nav-number">3.</span> <span class="nav-text">TCP的运行方式及特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP通信的数据封装解封过程，如下图所示："><span class="nav-number">3.1.</span> <span class="nav-text">TCP通信的数据封装解封过程，如下图所示：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP运行的三个主要阶段"><span class="nav-number">3.2.</span> <span class="nav-text">TCP运行的三个主要阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接的定义"><span class="nav-number">3.2.1.</span> <span class="nav-text">连接的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建连接之三次握手"><span class="nav-number">3.2.2.</span> <span class="nav-text">创建连接之三次握手</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三次握手协议的过程详解："><span class="nav-number">3.2.2.1.</span> <span class="nav-text">三次握手协议的过程详解：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么需要三次握手？"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">为什么需要三次握手？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传送数据"><span class="nav-number">3.2.3.</span> <span class="nav-text">传送数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可靠传输"><span class="nav-number">3.2.4.</span> <span class="nav-text">可靠传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可靠传输-停止等待ARQ协议"><span class="nav-number">3.2.4.1.</span> <span class="nav-text">可靠传输 - 停止等待ARQ协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可靠传输-连续ARQ协议-滑动窗口协议"><span class="nav-number">3.2.4.2.</span> <span class="nav-text">可靠传输 - 连续ARQ协议+滑动窗口协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可靠传输-SACK（选择性确认）"><span class="nav-number">3.2.4.3.</span> <span class="nav-text">可靠传输 - SACK（选择性确认）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流量控制"><span class="nav-number">3.2.5.</span> <span class="nav-text">流量控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流量控制-特殊情况"><span class="nav-number">3.2.5.1.</span> <span class="nav-text">流量控制 - 特殊情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拥塞控制"><span class="nav-number">3.2.6.</span> <span class="nav-text">拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网络拥塞示意图："><span class="nav-number">3.2.6.1.</span> <span class="nav-text">网络拥塞示意图：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞控制-–-方法"><span class="nav-number">3.2.6.2.</span> <span class="nav-text">拥塞控制 – 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞控制-–-方法-–-慢开始"><span class="nav-number">3.2.6.3.</span> <span class="nav-text">拥塞控制 – 方法 – 慢开始</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞控制-–-方法-–-拥塞避免"><span class="nav-number">3.2.6.4.</span> <span class="nav-text">拥塞控制 – 方法 – 拥塞避免</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞控制-–-方法-–-快重传"><span class="nav-number">3.2.6.5.</span> <span class="nav-text">拥塞控制 – 方法 – 快重传</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞控制-–-方法-–-快恢复"><span class="nav-number">3.2.6.6.</span> <span class="nav-text">拥塞控制 – 方法 – 快恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#终止连接之四次挥手"><span class="nav-number">3.2.7.</span> <span class="nav-text">终止连接之四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#四次挥手过程分析"><span class="nav-number">3.2.7.1.</span> <span class="nav-text">四次挥手过程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#四次挥手过程详解："><span class="nav-number">3.2.7.1.1.</span> <span class="nav-text">四次挥手过程详解：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么释放连接的时候，要进行4次挥手？"><span class="nav-number">3.2.7.1.2.</span> <span class="nav-text">为什么释放连接的时候，要进行4次挥手？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP是全双工通信模式。"><span class="nav-number">3.2.7.1.3.</span> <span class="nav-text">TCP是全双工通信模式。</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP性能问题"><span class="nav-number">3.3.</span> <span class="nav-text">TCP性能问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#造成性能问题的原因"><span class="nav-number">3.3.1.</span> <span class="nav-text">造成性能问题的原因</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">3.4.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QUIC"><span class="nav-number">3.4.1.</span> <span class="nav-text">QUIC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QUIC的特点"><span class="nav-number">3.4.2.</span> <span class="nav-text">QUIC的特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">3.6.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
